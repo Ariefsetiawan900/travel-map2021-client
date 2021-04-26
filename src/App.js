@@ -3,16 +3,19 @@ import axios from "axios";
 import ReactMapGL, { Marker, Popup } from "react-map-gl";
 import { Room, Star } from "@material-ui/icons";
 import { format } from "timeago.js";
+import { Register,Login } from "./components";
 import "./App.css";
 
 const App = () => {
-  const currentUser = "Sultan GG";
+  const [currentUser, setCurrentUser] = useState(null);
   const [pins, setPins] = useState([]);
   const [currentPlaceId, setCurrentPlaceId] = useState(null);
   const [newPlace, setNewPlace] = useState(null);
   const [title, setTitle] = useState(null);
   const [desc, setDesc] = useState(null);
   const [rating, setRating] = useState(0);
+  const [showRegister, setShowRegister] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
   const [viewport, setViewport] = useState({
     width: "100wh",
     height: "100vh",
@@ -81,12 +84,12 @@ const App = () => {
             <Marker
               latitude={p.lat}
               longitude={p.long}
-              offsetLeft={-viewport * 3.5}
-              offsetTop={-viewport * 7}
+              offsetLeft={-viewport.zoom * 3.5}
+              offsetTop={-viewport.zoom * 7}
             >
               <Room
                 style={{
-                  fontSize: viewport * 7,
+                  fontSize: viewport.zoom * 7,
                   color: p.username === currentUser ? "tomato" : "slateblue",
                   cursor: "pointer",
                 }}
@@ -157,6 +160,24 @@ const App = () => {
             </div>
           </Popup>
         )}
+        {currentUser ? (
+          <button className="button logout">Log Out</button>
+        ) : (
+          <div className="buttons">
+            <button className="button login" onClick={() => setShowLogin(true)}>
+              Login
+            </button>
+            <button
+              className="button register"
+              onClick={() => setShowRegister(true)}
+            >
+              Register
+            </button>
+          </div>
+        )}
+        {showRegister &&  <Register setShowRegister={setShowRegister} /> }
+        {showLogin && <Login setShowLogin={setShowLogin}/>}
+       
       </ReactMapGL>
     </div>
   );
