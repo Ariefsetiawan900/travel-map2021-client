@@ -3,12 +3,12 @@ import axios from "axios";
 import ReactMapGL, { Marker, Popup } from "react-map-gl";
 import { Room, Star } from "@material-ui/icons";
 import { format } from "timeago.js";
-import { Register,Login } from "./components";
+import { Register, Login } from "./components";
 import "./App.css";
 
 const App = () => {
-  const myStorage = window.localStorage
-  const [currentUser, setCurrentUser] = useState(null);
+  const myStorage = window.localStorage;
+  const [currentUser, setCurrentUser] = useState(myStorage.getItem("user"));
   const [pins, setPins] = useState([]);
   const [currentPlaceId, setCurrentPlaceId] = useState(null);
   const [newPlace, setNewPlace] = useState(null);
@@ -69,6 +69,11 @@ const App = () => {
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const handleLogout = () => {
+    myStorage.removeItem("user");
+    setCurrentUser(null);
   };
   return (
     <div>
@@ -162,7 +167,9 @@ const App = () => {
           </Popup>
         )}
         {currentUser ? (
-          <button className="button logout">Log Out</button>
+          <button className="button logout" onClick={handleLogout}>
+            Log Out
+          </button>
         ) : (
           <div className="buttons">
             <button className="button login" onClick={() => setShowLogin(true)}>
@@ -176,9 +183,14 @@ const App = () => {
             </button>
           </div>
         )}
-        {showRegister &&  <Register setShowRegister={setShowRegister} /> }
-        {showLogin && <Login setShowLogin={setShowLogin} myStorage={myStorage} setCurrentUser={setCurrentUser}/>}
-       
+        {showRegister && <Register setShowRegister={setShowRegister} />}
+        {showLogin && (
+          <Login
+            setShowLogin={setShowLogin}
+            myStorage={myStorage}
+            setCurrentUser={setCurrentUser}
+          />
+        )}
       </ReactMapGL>
     </div>
   );
